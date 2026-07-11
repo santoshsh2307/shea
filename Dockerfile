@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies first for better layer caching
 COPY enterprise-ui/package*.json ./
-RUN npm ci
+RUN npm install
 
 # Copy the rest of the frontend source and build
 COPY enterprise-ui/ ./
