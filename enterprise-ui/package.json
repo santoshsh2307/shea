@@ -17,7 +17,6 @@
     "web-vitals": "^2.1.4"
   },
   "homepage": "/",
-  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "HOST=0.0.0.0 PORT=3000 react-scripts start",
     "build": "react-scripts build",

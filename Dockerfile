@@ -22,3 +22,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+# Root Dockerfile for the shea (enterprise-ui) React application.
+# Builds the React app with Node.js and serves the static build with Nginx.
+
+
