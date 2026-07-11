@@ -12,6 +12,13 @@ RUN npm ci
 COPY enterprise-ui/src ./src
 COPY enterprise-ui/public ./public
 
+# API base URL for the frontend to call the backend.
+# CRA inlines REACT_APP_* vars at build time, so this must be set here
+# (not just at runtime). Defaults to empty so the app fails gracefully
+# with an error message instead of crashing when no backend is configured.
+ARG REACT_APP_API_URL=""
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+
 # Build the app
 RUN npm run build
 
