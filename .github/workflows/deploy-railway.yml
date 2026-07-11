@@ -1,0 +1,37 @@
+name: Deploy to Railway (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment name (optional)'
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy to Railway (requires RAILWAY_API_KEY secret)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
+
+      - name: Login to Railway
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+        run: |
+          if [ -z "${RAILWAY_API_KEY}" ]; then
+            echo "RAILWAY_API_KEY not provided — aborting deploy"; exit 1
+          fi
+          railway login --apiKey "${RAILWAY_API_KEY}"
+
+      - name: Deploy (railway up)
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+        run: |
+          # `railway up` will attempt to deploy from the current repository
+          # You may need to customize this to your Railway project/service
+          railway up --detach
