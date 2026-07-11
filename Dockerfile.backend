@@ -1,0 +1,15 @@
+FROM eclipse-temurin:17-jre-jammy
+
+WORKDIR /app
+
+# Copy the built JAR from the maven build
+COPY enterprise-backend/target/enterprise-backend-1.0.0.jar app.jar
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD java -cp app.jar org.springframework.boot.loader.JarLauncher -version || exit 1
+
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
