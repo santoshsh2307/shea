@@ -1,1 +1,4 @@
 enterprise-backend/
+enterprise-ui/node_modules/
+enterprise-ui/build/
+enterprise-ui/*.jar
