@@ -16,7 +16,7 @@ COPY enterprise-ui/public ./public
 # CRA inlines REACT_APP_* vars at build time, so this must be set here
 # (not just at runtime). Defaults to empty so the app fails gracefully
 # with an error message instead of crashing when no backend is configured.
-ARG REACT_APP_API_URL=""
+ARG REACT_APP_API_URL="https://web-production-4437d.up.railway.app"
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 
 # Build the app
