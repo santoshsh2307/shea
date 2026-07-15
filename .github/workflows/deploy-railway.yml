@@ -1,6 +1,14 @@
-name: Deploy to Railway (manual)
+name: Deploy Frontend to Railway
 
 on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'enterprise-ui/**'
+      - 'Dockerfile.frontend'
+      - 'nginx.conf'
+      - 'railway.json'
+      - '.github/workflows/deploy-railway.yml'
   workflow_dispatch:
     inputs:
       environment:
@@ -9,8 +17,11 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Railway (requires RAILWAY_API_KEY secret)
+    name: Deploy frontend to Railway
     runs-on: ubuntu-latest
+    concurrency:
+      group: railway-frontend-deploy
+      cancel-in-progress: true
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -19,19 +30,38 @@ jobs:
         run: |
           npm install -g @railway/cli
 
+      - name: Validate required secrets
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+        run: |
+          if [ -z "${RAILWAY_API_KEY}" ]; then
+            echo "Missing RAILWAY_API_KEY secret"; exit 1
+          fi
+          if [ -z "${RAILWAY_PROJECT_ID}" ]; then
+            echo "Missing RAILWAY_PROJECT_ID secret"; exit 1
+          fi
+          if [ -z "${RAILWAY_SERVICE_ID}" ]; then
+            echo "Missing RAILWAY_SERVICE_ID secret"; exit 1
+          fi
+
       - name: Login to Railway
         env:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
         run: |
-          if [ -z "${RAILWAY_API_KEY}" ]; then
-            echo "RAILWAY_API_KEY not provided — aborting deploy"; exit 1
-          fi
           railway login --apiKey "${RAILWAY_API_KEY}"
 
-      - name: Deploy (railway up)
+      - name: Link Railway project/service
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
         run: |
-          # `railway up` will attempt to deploy from the current repository
-          # You may need to customize this to your Railway project/service
-          railway up --detach
+          railway link --project "${RAILWAY_PROJECT_ID}" --service "${RAILWAY_SERVICE_ID}"
+
+      - name: Deploy frontend
+        env:
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+        run: |
+          railway up --detach --yes --project "${RAILWAY_PROJECT_ID}" --service "${RAILWAY_SERVICE_ID}"
