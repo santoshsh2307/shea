@@ -3,12 +3,6 @@ name: Deploy Frontend to Railway
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'enterprise-ui/**'
-      - 'Dockerfile.frontend'
-      - 'nginx.conf'
-      - 'railway.json'
-      - '.github/workflows/deploy-railway.yml'
   workflow_dispatch:
     inputs:
       environment:
