@@ -1,6 +1,12 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "";
+const DEFAULT_API_BASE_URL = "https://web-production-4437d.up.railway.app";
+export const API_BASE_URL = (process.env.REACT_APP_API_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");
+
+export const getApiUrl = (path) => {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${normalizedPath}`;
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,
