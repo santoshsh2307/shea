@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { UserOutlined, CameraOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { updateUser } from "../api/userService";
+import { updateUser, getApiUrl } from "../api/userService";
 
 function Profile() {
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ function Profile() {
 
     // Set photo preview if photo exists
     if (user.photo) {
-      setPhotoPreview(`http://localhost:8080/api/uploads/photos/${user.photo}`);
+      setPhotoPreview(getApiUrl(`/uploads/photos/${user.photo}`));
     }
   }, [form, navigate]);
 

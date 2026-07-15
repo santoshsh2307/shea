@@ -26,7 +26,7 @@ import {
 import CreateUser from "./CreateUser_new";
 import UserEditModal from "./UserEditModal";
 import { jsPDF } from "jspdf";
-import { getAllUsers, deleteUser as deleteUserAPI, uploadUserPhotos } from "../api/userService";
+import { getAllUsers, deleteUser as deleteUserAPI, uploadUserPhotos, getApiUrl } from "../api/userService";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -140,7 +140,7 @@ export default function Users() {
     }
   };
 
-  const getPhotoUrl = (fileName) => `http://localhost:8080/api/uploads/photos/${fileName}`;
+  const getPhotoUrl = (fileName) => getApiUrl(`/uploads/photos/${fileName}`);
 
   const actualPhotosForUser = (user) => {
     if (!user) return [];
