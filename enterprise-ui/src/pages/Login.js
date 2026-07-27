@@ -44,9 +44,17 @@ function Login() {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <div
+      style={{
+        minHeight: "100dvh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "16px"
+      }}
+    >
       <Spin spinning={loading}>
-        <Card title="Sign In" style={{ width: 350 }}>
+        <Card title="Sign In" style={{ width: "100%", maxWidth: 380 }}>
           <Input 
             placeholder="Username" 
             onChange={e => setUsername(e.target.value)}

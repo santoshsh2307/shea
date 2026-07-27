@@ -11,17 +11,19 @@ import {
   Spin,
   Avatar,
   Divider,
+  Grid,
 } from "antd";
 import { UserOutlined, CameraOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { updateUser, getApiUrl } from "../api/userService";
 
 function Profile() {
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
   useEffect(() => {
@@ -107,7 +109,6 @@ function Profile() {
 
   const handlePhotoChange = (info) => {
     if (info.file) {
-      setPhotoFile(info.file);
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -122,16 +123,16 @@ function Profile() {
   }
 
   return (
-    <div style={{ padding: "40px 20px", maxWidth: "800px", margin: "0 auto" }}>
+    <div style={{ padding: isMobile ? "12px" : "40px 20px", maxWidth: "800px", margin: "0 auto" }}>
       <Card title="My Profile" extra={<Button onClick={() => navigate("/dashboard")}>Back</Button>}>
         
         {/* Profile Photo Section */}
         <Row gutter={[20, 20]} style={{ marginBottom: "30px" }}>
           <Col xs={24} sm={8} style={{ textAlign: "center" }}>
             {photoPreview ? (
-              <Avatar size={150} src={photoPreview} />
+              <Avatar size={isMobile ? 110 : 150} src={photoPreview} />
             ) : (
-              <Avatar size={150} icon={<UserOutlined />} style={{ backgroundColor: "#1890ff" }} />
+              <Avatar size={isMobile ? 110 : 150} icon={<UserOutlined />} style={{ backgroundColor: "#1890ff" }} />
             )}
           </Col>
           
@@ -142,7 +143,6 @@ function Profile() {
               beforeUpload={() => false}
               onChange={handlePhotoChange}
               onRemove={() => {
-                setPhotoFile(null);
                 setPhotoPreview(null);
               }}
             >

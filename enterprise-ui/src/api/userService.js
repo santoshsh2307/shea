@@ -1,7 +1,15 @@
 import axios from "axios";
 
-const DEFAULT_API_BASE_URL = "https://web-production-4437d.up.railway.app";
-export const API_BASE_URL = (process.env.REACT_APP_API_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");
+const FALLBACK_API_BASE_URL = "https://web-production-4437d.up.railway.app";
+const runtimeOrigin = typeof window !== "undefined" ? window.location.origin : "";
+const configuredApiUrl = (process.env.REACT_APP_API_URL || "").trim();
+const isLocalRuntime = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(runtimeOrigin);
+
+export const API_BASE_URL = (
+  configuredApiUrl ||
+  (!isLocalRuntime && runtimeOrigin) ||
+  FALLBACK_API_BASE_URL
+).replace(/\/$/, "");
 
 export const getApiUrl = (path) => {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -15,6 +23,16 @@ const api = axios.create({
   },
   timeout: 10000, // 10 second timeout
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === "ECONNABORTED") {
+      error.message = "Request timed out. Please check your connection and try again.";
+    }
+    return Promise.reject(error);
+  }
+);
 
 // ========== AUTH ENDPOINTS ==========
 

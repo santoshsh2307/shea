@@ -14,7 +14,8 @@ import {
   message,
   Select,
   Drawer,
-  Spin
+  Spin,
+  Grid
 } from "antd";
 import {
   SettingOutlined,
@@ -26,12 +27,14 @@ import {
 import CreateUser from "./CreateUser_new";
 import UserEditModal from "./UserEditModal";
 import { jsPDF } from "jspdf";
-import { getAllUsers, deleteUser as deleteUserAPI, uploadUserPhotos, getApiUrl } from "../api/userService";
+import { getAllUsers, deleteUser as deleteUserAPI, getApiUrl } from "../api/userService";
 
 const { Search } = Input;
 const { Option } = Select;
 
 export default function Users() {
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -59,8 +62,6 @@ export default function Users() {
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [photoUploadFiles, setPhotoUploadFiles] = useState([]);
-  const [photoModalLoading, setPhotoModalLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentUserInfo, setCurrentUserInfo] = useState(null);
@@ -153,32 +154,6 @@ export default function Users() {
     return [];
   };
 
-  const handleUploadPhotos = async () => {
-    if (!selectedUser || !photoUploadFiles.length) {
-      message.warning("Please select photos to upload");
-      return;
-    }
-
-    setPhotoModalLoading(true);
-    try {
-      const files = photoUploadFiles.map(file => file.originFileObj).filter(Boolean);
-      const response = await uploadUserPhotos(selectedUser.id, files);
-      if (response.data.success) {
-        message.success("Photos uploaded successfully");
-        setPhotoUploadFiles([]);
-        fetchUsers();
-        setSelectedUser(response.data.data);
-      } else {
-        message.error(response.data.message || "Upload failed");
-      }
-    } catch (error) {
-      console.error("Photo upload error:", error);
-      message.error(error.response?.data?.message || "Failed to upload photos");
-    } finally {
-      setPhotoModalLoading(false);
-    }
-  };
-
   const toDataUrl = async (url) => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -265,11 +240,6 @@ export default function Users() {
     setIsModalVisible(true);
   };
 
-  const openEditModal = (record) => {
-    setEditingUser({ ...record });
-    setIsModalVisible(true);
-  };
-
   // ================= ALL COLUMNS =================
 
   const allColumns = [
@@ -290,7 +260,7 @@ export default function Users() {
           return (
             <img
               src={getPhotoUrl(photos[0])}
-              alt="User Photo"
+              alt="User avatar"
               style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%' }}
             />
           );
@@ -353,7 +323,6 @@ export default function Users() {
             onClick={() => {
               setSelectedUser(record);
               setCurrentPhotoIndex(0);
-              setPhotoUploadFiles([]);
               setIsPhotoModalOpen(true);
             }}
           >
@@ -405,7 +374,7 @@ export default function Users() {
   return (
     <Spin spinning={loading}>
       <Row style={{ marginBottom: 20 }} gutter={10}>
-        <Col span={6}>
+        <Col xs={24} sm={12} md={8} lg={6}>
           <Search
             placeholder="Search anything..."
             allowClear
@@ -413,25 +382,25 @@ export default function Users() {
           />
         </Col>
 
-        <Col>
+        <Col xs={12} sm={6} md={4}>
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
             New User
           </Button>
         </Col>
 
-        <Col>
+        <Col xs={12} sm={6} md={4}>
           <Button icon={<FilterOutlined />} onClick={() => setIsFilterDrawerOpen(true)}>
             Filters
           </Button>
         </Col>
 
-        <Col>
+        <Col xs={12} sm={6} md={4}>
           <Dropdown menu={{ items: columnItems }} trigger={["click"]}>
             <Button icon={<SettingOutlined />}>Columns</Button>
           </Dropdown>
         </Col>
 
-        <Col>
+        <Col xs={12} sm={6} md={4}>
           <Button onClick={fetchUsers} type="default">
             Refresh
           </Button>
@@ -443,7 +412,7 @@ export default function Users() {
         columns={columns}
         rowKey="key"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 5, size: isMobile ? "small" : "default" }}
         rowClassName={(record) =>
           record.membershipType === "Free"
             ? "free-member-row"
@@ -456,7 +425,7 @@ export default function Users() {
       <Drawer
         title="Advanced Filters"
         placement="right"
-        width={400}
+        width={isMobile ? "100%" : 400}
         onClose={() => setIsFilterDrawerOpen(false)}
         open={isFilterDrawerOpen}
       >
@@ -551,7 +520,8 @@ export default function Users() {
         title={editingUser ? "Edit User" : "Create User"}
         open={isModalVisible}
         footer={null}
-        width="85%"
+        width={isMobile ? "100%" : "85%"}
+        style={isMobile ? { top: 8 } : undefined}
         destroyOnClose
         onCancel={() => setIsModalVisible(false)}
       >
@@ -570,7 +540,8 @@ export default function Users() {
         title="Edit User"
         open={isEditModalOpen}
         footer={null}
-        width="85%"
+        width={isMobile ? "100%" : "85%"}
+        style={isMobile ? { top: 8 } : undefined}
         destroyOnClose
         onCancel={() => {
           setIsEditModalOpen(false);
@@ -598,7 +569,8 @@ export default function Users() {
         open={isPhotoModalOpen}
         footer={null}
         onCancel={() => setIsPhotoModalOpen(false)}
-        width={650}
+        width={isMobile ? "100%" : 650}
+        style={isMobile ? { top: 8 } : undefined}
         centered
       >
         {selectedUser && (
@@ -606,7 +578,7 @@ export default function Users() {
             <div style={{ textAlign: "center", marginBottom: 20 }}>
               <img
                 src={getUserPhotos()[currentPhotoIndex]}
-                alt="user"
+                alt="User"
                 style={{
                   width: "100%",
                   maxHeight: 450,

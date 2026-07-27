@@ -1,25 +1,19 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Card, Row, Col, Statistic, Badge, Dropdown, Button, Spin } from "antd";
+import { Card, Row, Col, Statistic, Spin, Grid } from "antd";
 import {
   TeamOutlined,
-  CrownOutlined,
-  UserOutlined,
-  LogoutOutlined
+  CrownOutlined
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../api/userService";
 import Users from "./Users_new";
 
 export default function Dashboard() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      setCurrentUser(JSON.parse(userStr));
-    }
     fetchUsers();
   }, []);
 
@@ -51,7 +45,7 @@ export default function Dashboard() {
   return (
     <Spin spinning={loading}>
       {/* Summary Cards */}
-      <Row gutter={16} style={{ marginBottom: 20 }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={8}>
           <Card>
             <Statistic
@@ -84,7 +78,7 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      <Card title="SHEA Members Overview">
+      <Card title="SHEA Members Overview" bodyStyle={{ padding: isMobile ? 12 : 24 }}>
         <Users users={users} setUsers={setUsers} />
       </Card>
     </Spin>

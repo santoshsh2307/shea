@@ -14,8 +14,6 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { createUser, updateUser, uploadUserPhotos } from "../api/userService";
 
-const { TextArea } = Input;
-
 function CreateUser({ initialValues, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [photoFiles, setPhotoFiles] = useState([]);
@@ -59,7 +57,7 @@ function CreateUser({ initialValues, onSuccess }) {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "12px" }}>
         <Card title={initialValues ? "Edit User" : "Create New User"}>
           <Form
             layout="vertical"
@@ -70,7 +68,7 @@ function CreateUser({ initialValues, onSuccess }) {
             {/* Person Information */}
             <h3>Personal Information</h3>
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="username" 
                   label="Username" 
@@ -82,7 +80,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="password" 
                   label="Password" 
@@ -94,7 +92,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="email" 
                   label="Email" 
@@ -107,7 +105,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="firstName" 
                   label="First Name"
@@ -117,7 +115,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="lastName" 
                   label="Last Name"
@@ -127,7 +125,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="contactNumber" 
                   label="Contact Number"
@@ -168,7 +166,7 @@ function CreateUser({ initialValues, onSuccess }) {
             {/* Professional & Health Information */}
             <h3 style={{ marginTop: 30 }}>Professional & Health Information</h3>
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="occupation" 
                   label="Occupation"
@@ -177,7 +175,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="education" 
                   label="Education"
@@ -192,7 +190,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="bloodGroup" 
                   label="Blood Group"
@@ -210,7 +208,7 @@ function CreateUser({ initialValues, onSuccess }) {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="membershipType" 
                   label="Membership Type"
@@ -227,7 +225,7 @@ function CreateUser({ initialValues, onSuccess }) {
             {/* Membership Status */}
             <h3 style={{ marginTop: 30 }}>Status</h3>
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Form.Item 
                   name="isActive" 
                   label="Active Status"
@@ -243,7 +241,7 @@ function CreateUser({ initialValues, onSuccess }) {
 
             {/* Form Actions */}
             <Row gutter={16} style={{ marginTop: 30 }}>
-              <Col span={12}>
+              <Col xs={24} md={12} style={{ marginBottom: 12 }}>
                 <Button 
                   type="primary" 
                   htmlType="submit" 
@@ -254,7 +252,7 @@ function CreateUser({ initialValues, onSuccess }) {
                   {initialValues ? "Update User" : "Create User"}
                 </Button>
               </Col>
-              <Col span={12}>
+              <Col xs={24} md={12}>
                 <Button 
                   block 
                   size="large"

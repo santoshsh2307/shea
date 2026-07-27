@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Tabs, Table, Button, Modal, Form, Input, message, Carousel, Upload } from "antd";
+import { Tabs, Table, Button, Modal, Form, Input, message, Carousel, Upload, Grid } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { jsPDF } from "jspdf";
 
 export default function Services() {
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
   const [activeTab, setActiveTab] = useState("progress");
 
   // Sample data for tables
@@ -255,7 +257,7 @@ export default function Services() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: isMobile ? 12 : 20 }}>
       {/* Top Carousel */}
       <Carousel autoplay autoplaySpeed={2000} style={{ marginBottom: 20 }}>
         {images.map((img, index) => (
@@ -263,7 +265,7 @@ export default function Services() {
             <img
               src={img}
               alt={`Slide ${index + 1}`}
-              style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px" }}
+              style={{ width: "100%", height: isMobile ? "140px" : "200px", objectFit: "cover", borderRadius: "8px" }}
             />
           </div>
         ))}
@@ -283,7 +285,7 @@ export default function Services() {
       </Button>
 
       {/* Table */}
-      <Table dataSource={getData()} columns={getColumns()} />
+      <Table dataSource={getData()} columns={getColumns()} scroll={{ x: "max-content" }} />
 
       {/* Modal */}
       <Modal
@@ -295,6 +297,8 @@ export default function Services() {
           setUploadedPdf(null);
         }}
         okText={editingRecord ? "Update" : "Create"}
+        width={isMobile ? "100%" : 520}
+        style={isMobile ? { top: 8 } : undefined}
       >
         <Form form={form} layout="vertical">
           {activeTab === "progress" && (
